@@ -1,0 +1,13 @@
+{
+    "background.customImages": [
+        "C:/Users/panmi/Pictures/IMG_0881.PNG"
+    ],
+    "files.associations": {
+        "*.tcc": "cpp",
+        "string": "cpp",
+        "istream": "cpp",
+        "streambuf": "cpp",
+        "cmath": "cpp",
+        "complex": "cpp"
+    }
+}
