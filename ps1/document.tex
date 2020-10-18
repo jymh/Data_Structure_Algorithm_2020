@@ -1,0 +1,204 @@
+\documentclass[]{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+
+\title{Solution for Problem Set 1}
+\author{Mianzhi Pan, 181240045}
+\begin{document}
+	\maketitle
+	\section{Problem 1}
+	
+	\textbf{(a)}
+	\begin{algorithm}[h]
+		\caption{SELECTION-SORT(A)} % 名称
+		\begin{algorithmic}[1]
+			\For{$i = 1 \to A.length - 1$}
+			\State{$mini = i$}
+			\For{$j = i + 1 \to A.length$}
+			\If{$A[j] < A[mini]$}
+			\State{$mini = j$}
+			\EndIf
+			\EndFor
+			\State{$swap(A[i], A[mini])$}
+			\EndFor
+		\end{algorithmic}
+	\end{algorithm}
+
+	\textbf{(b)}\ \ \textbf{Best case:}\ the array $A$ has been sorted, so array elements $A[i](1<= i <= n-1)$ needs comparing $n-i$ times while no swaping. Then the running time is $\sum_{i=1}^{n-1}(n-i)=\Theta(n^2)$.
+	
+	\textbf{Worst case:}\ $A$ is reverse ordered. In addition to the same comparion times as the best case, this algorithm needs swaping $n-1$ times, so the running time is $\sum_{i=1}^{n-1}(n-i)+(n-1)$, which is still $\Theta(n^2)$.
+	
+	\textbf{(c)}\ \textbf{Loop invariant:}Every time the program reaches line 1, the subarray $A[1,...,i - 1]$ consisting of $i - 1$ smallest elements from the origin array $A$ is sorted.
+		
+	\textbf{Initialization:}When $i=1$, the subarray $A[1,...,i - 1]$ is empty, and so we can say that it contains 0 smallest element from $A$ and it is sorted, which indicates that the loop invariant holds before the first loop iteration.
+	
+	\textbf{Maintenance:}Line 2 to 8 choose the smallest element from subarray $A[i,...,n - 1]$, then swap it and $A[i]$. Therefore, $A[i]$ would be the $i^{th}$ smallest element from the origin array $A$ after the $i^{th}$ loop.As a result, $A[1,...,i-1]$ consists of $i - 1$ smallest elements from $A$ in sorted order.
+	
+	\textbf{Termination:}The condition causing the $for$ loop to terminate is that $i>A.length - 1$, at which time we have $i = n$. In the last loop, we swap the smaller element in $A[n-1, n]$ and $A[n-1]$, thus the subarray $A[1,...,n-1]$ consists of $n - 1$ smallest elements from $A$ in sorted order and $A[n]$ is the biggest element. We conclude the whole array $A$ is sorted. Hence the algorithm is correct.
+	\section{Problem 2}
+	\textbf{(a)}\ In each iteration, $\mathtt{PolyEval}$ needs to do addition and mutiplication both one time. So the runtime is $2n = \Theta(n)$.
+	
+	\textbf{(b)}\ \textbf{Loop invariant:}Every time the program reaches line 2, we have $y = \sum_{j=0}^{n-1-i}c_{i+1+j}x^{j}$
+	
+	\textbf{Initialization:}Before the first loop, we have $i = n$. Calculating $y = \sum_{j=0}^{-1}c_{n+1+j}x^{j} = 0$, we have the same value of $y$ as line 1.
+	
+	\textbf{Maintenance:}Since $c_0,\cdots,c_n$ and $x$ are fixed, the loop invariant is only related with $i$, and we can write it as $f(i)$. Before each loop, we have $y = f(i)$. We want to prove that after each loop  $y = f(i-1)$. 
+	\begin{equation*}
+		\begin{aligned}
+		y &= c_i + x*f(i)\\
+		&= c_i + x*\sum_{j=0}^{n-1-i}c_{i+1+j}x^{j}\\
+		&= c_j + \sum_{j=0}^{n-i-i}c_{i+1+j}x^{j+1}\\
+		&= c_j*x^0 + \sum_{j=1}^{n-i}c_{i+j}x^j\\
+		&=\sum_{j=0}^{n-i}c_{i+j}x^j\\
+		&=f(i-1) 
+		\end{aligned}
+	\end{equation*}
+	
+	\textbf{Termination:}In the last loop, $i = 0$. As a result, when the program terminates, $y = f(0-1) = \sum_{j=0}^{n}c_jx^j$, which is equal to $P(x)$. Hence the algorithm is correct.
+	\section{Problem 3}
+	\textbf{(a)}\ For $f(n)$ and $g(n)$, we know that $f(n)>0, g(n)>0$. And we can easily find $n_0\geq 0$,s.t. for all $n\geq n_0$, we have
+	\begin{equation*}
+	\begin{aligned}
+	f(n),g(n)\leq max\{f(n),&g(n)\}\Rightarrow \frac{1}{2}(f(n)+g(n))\leq max\{f(n),g(n)\}\\
+	&max\{f(n),g(n)\}\leq f(n)+g(n)
+	\end{aligned}
+	\end{equation*}
+	so there are $c_1=1/2$ and $c_2=1$,\ s.t.$0\leq c_1(f(n)+g(n)\leq max\{f(n),g(n)\}\leq c_2(f(n)+g(n)$,\ i.e.$\Theta(f(n)+g(n)=max\{f(n),g(n)\}$.
+	
+	\textbf{(b)}\ Use binomial theorem, we have $(n+a)^b = C_b^0n^0a^b + C_b^1n^1a^{b-1} + \cdots + C_b^bn^ba^0$. We can easily find $n_0\geq 0$,\ s.t. for all $n\geq n_0$, we have $ n^b\leq C_b^0n^0a^b + C_b^1n^1a^{b-1} + \cdots + C_b^bn^ba^0\leq (C_b^0a^b + C_b^1a^{b-1} + \cdots + C_b^ba^0)n^b$,\ i.e.$0\leq\frac{(n+a)^b}{C_b^0a^b + C_b^1a^{b-1} + \cdots + C_b^ba^0}\leq n^b\leq (n+a)^b$.Therefore, $(n+a)^b=\Theta(n^b)$.
+	
+	\textbf{(c)}\ $\Theta$
+	\section{Problem 4}
+	\begin{equation*}
+	\begin{aligned}
+	&1 < n^{1/lgn} < lg(lg^*n) < lg^*(lgn) < lg^*n < 2^{lg^*n}\\ 
+	&< lnlnn < \sqrt{lgn} < lnn < lg^2n < 2^{\sqrt{2lgn}} < (\sqrt{2})^{lgn}\\ 
+	&< 2^{lgn} = n < nlgn = lg(n!) < 4^{lgn} = n^2\\
+	&< n^3 < (lgn)^{lgn} = n^{lglgn} <(3/2)^n < 2^n < n\cdot 2^n\\ 
+	&< e^n < (lgn)! < n! < (n+1)! < 2^{2^n} < 2^{2^{n+1}}\\
+	\end{aligned}
+	\end{equation*}
+	
+	\section{Problem 5}
+	Suppose we have two stacks $A$ and $B$. When do $\mathtt{enqueue}$ operation, we $\mathtt{push}$ an element $n$ into $A$. When we do $\mathtt{dequeue}$ operation, we $\mathtt{pop}$ $n$ from $B$. The elements in $B$ is from $A$. If $A$ is full or $B$ is empty, we $\mathtt{pop}$ elements in $A$ and $mathtt{push}$ them to $B$.
+	
+	The following pseudocode doesn't consider overflow and underflow. 
+	\begin{algorithm}[h]
+		\caption{enqueue(x)} % 名称
+		\begin{algorithmic}[1]
+		\If{$A.top == n$}
+		\Repeat
+		\State{$a = POP(A)$}
+		\State{$PUSH(B,a)$}
+		\Until{$B.top == n$ or $STACK-EMPTY(A)$}
+		\EndIf
+		\State{$PUSH(A,x)$}
+		\end{algorithmic}
+	\end{algorithm}
+
+	\begin{algorithm}[h]
+		\caption{dequeue} % 名称
+		\begin{algorithmic}[1]
+			\If{$STACK-EMPTY(B)$}
+			\Repeat
+			\State{$a = POP(A)$}
+			\State{$PUSH(B,a)$}
+			\Until{$B.top == n$ or $STACK-EMPTY(A)$}
+			\EndIf
+			\State{$POP(B)$}
+		\end{algorithmic}
+	\end{algorithm}
+
+	\textbf{best-case:}the running time for both $\mathtt{dequeue}$ and $\mathtt{enqueue}$ is $\Theta(1)$.
+	
+	\textbf{worst-case:}If $A$ is full and $B$ is empty, the running time is both $\Theta(n)$.
+	
+	\section{Problem 6}
+	Use two stacks $A$ and $B$, the former to store real elements and the latter to store minimum element.When we do $push$, first $PUSH$ it to $A$, and then compare it with the top element $b$ of $B$. If it is smaller than $b$,$PUSH$ it to $B$ as well. Otherwise, $PUSH$ $b$ to $B$ again. So the top element of $B$ is always the minimum of $A$.When we do $pop$, $POP$ both two stacks and return the result from $A$.When we do $min$,return the top element of $B$.
+	\begin{algorithm}[h]
+		\caption{push(x)} % 名称
+		\begin{algorithmic}[1]
+			\State{$PUSH(x, A)$}
+			\If{not $STACK-EMPTY(B)$}
+			\State{$b = POP(B)$}
+			\State{$PUSH(b, B)$}
+			\If{$x < b$}
+			\State{$PUSH(x, B)$}
+			\Else
+			\State{$PUSH(b, B)$}
+			\EndIf
+			\Else
+			\State{$PUSH(x, B)$}
+			\EndIf
+		\end{algorithmic}
+	\end{algorithm}
+
+	\begin{algorithm}[h]
+		\caption{pop()} % 名称
+		\begin{algorithmic}[1]
+			\State{$a = POP(A)$}
+			\State{$POP(B)$}
+			\State{return $a$}
+		\end{algorithmic}
+    \end{algorithm}
+
+	\begin{algorithm}[h]
+		\caption{min()} % 名称
+		\begin{algorithmic}[1]
+			\State{$b = POP(B)$}
+			\State{$PUSH(b, B)$}
+			\State{return $b$}
+		\end{algorithmic}
+	\end{algorithm}
+	
+	We design the MINISTACK data structure with two stacks, each of their space complexity is $O(n)$. So the total space complexity is $O(n)$.
+	\section{Problem 7}  
+	Use a queue $A$.When doing $remove$ operation, we first choose a random number $x$, which means we will remove the $x^{th}$ element in $A$. Then we do $DEQUEUE$ for $x-1$ times and $ENQUEUE$ them all. After that, we do $DEQUEUE$ once more and return the value.
+
+	\begin{algorithm}[h]
+	\caption{add(x)} % 名称
+		\begin{algorithmic}[1]
+		\State{$ENQUEUE(A, x)$}
+		\end{algorithmic}
+	\end{algorithm}	 
+
+	\begin{algorithm}[h]
+	\caption{remove} % 名称
+		\begin{algorithmic}[1]
+		\State{$x = random(N)$}
+		\While{$x > 1$}
+		\State{$a = DEQUEUE(A)$}
+		\State{$ENQUEUE(A, a)$}
+		\State{$x = x - 1$}
+		\EndWhile
+		\State{$a = DEQUEUE(A)$}
+		\State{return $a$}
+		\end{algorithmic}
+	\end{algorithm}
+	
+	It is obvious that the time complexity of $add$ is $O(1)$.When we do $remove$ each time, we need to do $DEQUEUE$ for $x$ times and $ENQUEUE$ for $x-1$ times while $1\leq x\leq N$ is a constant. Then the time complexity of $remove$ is $O(1)$ as well.
+	 
+	\section{Problem 8}  
+	We scan the input expression from left to right. If we come across an operand, output it directly. Otherwise, push the operator we meet to a stack $A$. After scanning the whole expression, pop the elements in $A$ and output them.
+	
+		\begin{algorithm}[h]
+		\caption{InToPost(E)} % 名称
+		\begin{algorithmic}[1]
+			\For{$i=1 \to E.length$}
+			\If{$E[i]$ is an operand}
+			\State{output $E[i]$}
+			\Else
+			\State{$PUSH(A,E[i])$}
+			\EndIf
+			\EndFor
+			\Repeat
+			\State{$a = POP(A)$}
+			\State{output $a$}
+			\Until{$STACK-EMPTY(A)$}
+		\end{algorithmic}
+	\end{algorithm}
+
+	Considering the worst case(all elements are operators), the algorithm has to scan the whole expression and do $n$ times' $PUSH$ and $n$ times' $POP$. Total operations number is $3n$, so the time complexity is $O(n)$.
+	
+\end{document}

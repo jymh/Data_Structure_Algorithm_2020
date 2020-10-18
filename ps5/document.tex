@@ -1,0 +1,267 @@
+\documentclass[]{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{forest}
+
+\title{Solution for Problem Set 5}
+\author{Mianzhi Pan, 181240045}
+\begin{document}
+	\maketitle
+	\section{Problem 1}
+	\textbf{(a)}\ The third and the last could not be the sequence because they violate the \textit{BST property}.(In the third sequence $912>911$ and in the last one $299<347$)
+	
+	\textbf{(b)}\ This claim is false apparently,\ we just need to show a counter-example:
+	
+	\begin{forest}
+	[$10$
+		[$6$
+			[$\cdots$]
+			[$8$
+				[$7$]
+				[$9$]
+			]
+		]
+		[$11$]
+	]		
+	\end{forest}   
+	
+	Suppose key $k$ is $9$,\ then $B = \{10, 6, 8, 9\}$, $A = \{7\}$, $C = \{11\}$.\ However,\ $7 > 6$. 
+	
+	\section{Problem 2}
+	$SEARCH$ operation doesn't change
+	\begin{algorithm}[H]
+		\caption{SEARCH(T,k)} % 名称
+		\begin{algorithmic}[1]
+		\State{$x = T.root$}
+		\While{$x != NIL$ and $x.key != k$}
+		\If{$x.key > k$}
+		\State{$x = x.left$}
+		\Else
+		\State{$x = x.right$}
+		\EndIf
+		\EndWhile	
+		\State{return $x$}
+		\end{algorithmic}
+	\end{algorithm}
+
+    We need to record the successor of the new inserted node compared with the origin $TREE-INSERT$.\ Besides the inserted node,\ the only node needing update $succ$ is its predecessor.\
+	\begin{algorithm}[H]
+	\caption{INSERT(T,z)} % 名称
+	\begin{algorithmic}[1]
+	\State{$x = T.root$}
+	\State{$y = NIL, s = NIL, pred = NIL$}
+	\While{$x != NIL$}
+	\State{$y = x$}
+	\If{$x.key > z.key$}
+	\State{$s = x$}
+	\State{$x = x.left$}
+	\Else
+	\State{$pred = x$}
+	\State{$x = x.right$}
+	\EndIf
+	\EndWhile
+	\State{$z.succ = s$}
+	\If{$y == NIL$}
+	\State{$T.root = z$}
+	\ElsIf{$z.key < y.key$}
+	\State{$y.left = z$}
+	\State{$pred.succ = z$}
+	\Else
+	\State{$y.right = z$}
+	\State{$y.succ = z$}
+	\EndIf
+	\end{algorithmic}
+	\end{algorithm}
+
+	To implement $DELETE$,\ we should implement $PARENT(T,z)$ to find the parent of a given node $z$:
+	\begin{algorithm}[H]
+	\caption{PARENT(T,z)} % 名称
+	\begin{algorithmic}[1]
+	\State{$x = T.root$}
+	\State{$y = NIL$}
+	\While{$x != NIL$ and $x.key != z.key$}
+	\State{$y = x$}
+	\If{$x.key > z.key$}
+	\State{$x = x.left$}
+	\Else
+	\State{$x = x.right$}
+	\EndIf
+	\EndWhile
+	\State{return $y$}
+	\end{algorithmic}
+	\end{algorithm}	
+
+	Then we modify $TRANSPLANT$
+	\begin{algorithm}[H]
+		\caption{TRANSPLANT(T, u, v)} % 名称
+		\begin{algorithmic}[1]
+		\State{$p = PARENT(T, u)$}
+		\If{$p == NIL$}
+		\State{$T.root = v$}
+		\ElsIf{$u == p.left$}
+		\State{$p.left = v$}
+		\Else
+		\State{$p.right = v$}
+		\EndIf
+		\end{algorithmic}
+	\end{algorithm}
+
+	Notice the only change $DELETE$ do to the in-order sequence is removing the target number,\ node which need update $succ$ is just the predecessor of the target node.\ So we first implement $TREE-PREDECESSOR$.
+	
+	\begin{algorithm}[H]
+		\caption{TREE-PREDECESSOR(x)} % 名称
+		\begin{algorithmic}[1]
+			\If{$x.left != NIL$}
+			\State{return $TREE-MAXIMUM(x.left)$}
+			\Else
+			\State{$y = PARENT(x)$}
+			\While{$y != NIL$ and $x == y.left$}
+			\State{$x = y$}
+			\State{$y = PARENT(y)$}
+			\EndWhile
+			\EndIf
+			\State{return $y$}
+		\end{algorithmic}
+	\end{algorithm}
+	 
+	\begin{algorithm}[H]
+		\caption{DELETE(T,z)} % 名称
+		\begin{algorithmic}[1]
+		\State{$pred = TREE-PREDECESSOR(z)$}
+		\State{$pred.succ = z.succ$} 	
+		\If{$z.left == NIL$}
+		\State{$TRANSPLANT(T, z, z.right)$}
+		\ElsIf{$z.right == NIL$}
+		\State{$TRANSPLANT(T, z, z.left)$}
+		\Else
+		\State{$y = TREE-MINIMUM(z.right)$}
+		\If{$PARENT(T,y) != z$}
+		\State{$TRANSPLANT(T, y, y.right)$} 
+		\State{$y.right = z.right$}
+		\EndIf
+		\State{$TRANSPLANT(T, z, y)$}
+		\State{$y.left = z.left$}
+		\EndIf
+		\end{algorithmic}
+	\end{algorithm}	
+
+	\section{Problem 3}
+	\textbf{(a)}\ $O(n^2)$
+	
+	\textbf{(b)}\ Notice all $n$ nodes with same value will fill the binary search tree level by level.\ Total runtime is $T = 0 + 1\times 2^1 + 2\times 2^2 + \cdots + lgn\times 2^{lgn}$.\ We can easily find time complexity is $O(nlgn)$.
+	
+	\textbf{(c)}\ For $n$ nodes with identical keys,\ we just need to insert the node into a list every time except the first time,\ so the time complexity is $O(n)$.
+	
+	\section{Problem 4}
+	\textbf{(a)}\ The largest ratio is $2$.(Every black node has two red nodes).
+	
+	The smallest is $0$.(All nodes are black and the tree is perfect).
+	
+	\textbf{(b)}\ First we prove that at most $n - 1$ right rotations are needed to transform the tree into a right-going chain.
+	
+	Suppose set $R$ contains all nodes from the tree's root to its right-most children,\ and $L$ contains the rest nodes.\ Every time we do right rotation,\ we will extract a node from $L$ and put it into $R$.\ Notice there are at most $n-1$ nodes in $L$,\ the statement is proved.
+	
+	Then we can do left rotation on an arbitary node from $R$,\ which consists of all $n$ nodes.\ Therefore we can construct any other arbitary $n$-node binary search tree with a particular rotation operation sequence.\ Notice this process needs at most $n-1$ rotations as well,\ the total time complexity is $O(n)$.
+	
+	\section{Problem 5}
+	\textbf{(a)}
+	\textcircled{1}
+	\begin{forest}
+		[$41(B)$]		
+	\end{forest}
+	\textcircled{2}
+	\begin{forest}
+		[$41(B)$
+			[$38(R)$]
+			[]
+		]
+	\end{forest}
+	\textcircled{3}
+	\begin{forest}
+		[$38(B)$
+			[$31(R)$]
+			[$41(R)$]		
+		]
+	\end{forest}
+	
+	\textcircled{4}
+	\begin{forest}
+		[$38(B)$
+			[$31(B)$
+				[$12(R)$]
+				[]
+			]
+			[$41(B)$]
+		]
+	\end{forest}
+	\textcircled{5}
+	\begin{forest}
+		[$38(B)$
+			[$19(B)$
+				[$12(R)$]
+				[$31(R)$]
+			]
+			[$41(B)$]
+		]
+	\end{forest}
+
+	\textcircled{6}
+	\begin{forest}
+		[$38(B)$
+			[$19(R)$
+				[$12(B)$
+					[$8(R)$]
+					[]
+				]
+				[$31(B)$]
+			]
+			[$41(B)$]
+		]
+	\end{forest}
+
+	\textbf{(b)}
+	
+	\textcircled{1}
+	\begin{forest}
+		[$38(B)$
+			[$19(R)$
+				[$12(B)$]
+				[$31(B)$]
+			]
+			[$41(B)$]
+		]
+	\end{forest}
+
+	\textcircled{2}
+	\begin{forest}
+		[$38(B)$
+			[$19(B)$
+				[]
+				[$31(R)$]
+			]
+			[$41(B)$]
+		]
+	\end{forest}
+
+	\textcircled{3}
+	\begin{forest}
+		[$38(B)$
+			[$31(B)$]
+			[$41(B)$]
+		]
+	\end{forest}
+
+	\textcircled{4}
+	\begin{forest}
+		[$38(B)$
+			[]
+			[$41(R)$]
+		]
+	\end{forest}
+	\textcircled{5}
+	\begin{forest}
+		[$41(B)$]
+	\end{forest}
+	\textcircled{6}
+\end{document}
