@@ -264,4 +264,67 @@
 		[$41(B)$]
 	\end{forest}
 	\textcircled{6}
+	
+	\section{Problem 6}
+	\textbf{(a)}\ Assume an AVL tree of height $h$ has $T(h)$ nodes,\ notice the property of AVL tree,\ both of the subtrees rooted at $root.left$ and $root.right$ are also AVL trees,\ one of which must has height $h-1$ and the other can have height $h-1$ or $h-2$.\ So we have(notice $T(h-1)$ must be larger than $T(h-2)$)
+	\begin{equation*}
+	T(h) \geq T(h-1) + T(h-2) + 1
+	\end{equation*}
+	Therefore,
+	\begin{equation*}
+	T(h) > T(h-1) + T(h-2)
+	\end{equation*}
+	Obviously,\ $T(0) = 0$ and $T(1) = 1$,\ and they are the first two elements of Fibonacci sequence,\ hence
+	\begin{equation*}
+	n = T(h) > F_h = \lfloor\frac{\phi^h}{\sqrt{5}} + \frac{1}{2}\rfloor\\
+	\end{equation*}
+	Then 
+	\begin{equation*}
+	n \geq \frac{\phi^h}{\sqrt{5}} + \frac{1}{2}
+	\end{equation*}
+	\begin{equation*}
+	h \leq \frac{log(\sqrt{5}(n-\frac{1}{2}))}{log\phi}
+	\end{equation*}
+	And we have $h = O(logn)$.
+	
+	\textbf{(b)}\ Notice every time we do left-rotation on a node $x$,\ the height of its left child $x.left$ will increase and that of right child will decrease.\ The effect is the opposite when we do right -rotation.\ So when we do $BALANCE(x)$,\ if $x.left.h - x.right.h > 1$,\ we do right-rotation on $x$.\ Otherwise we do left-rotation on $x$.\ Then we continue this process on $x.left$ and $x.right$ if the subtrees rooted at them do not satisfy the property of AVL tree.\ At last we check $x$ again(notice $|x.left.h - x.right.h| \leq 1$ may not holds just after one left-rotation or right-rotation on it),\ if the property does not hold,\ we repeat the above operation.
+	
+	\textbf{(c)}\ First we insert $z$ into the tree just as $INSERT$ operation in $BST$.\ Notice only the heights of $z$'s ancestors are changed,\ we apply $BALANCE$ to them bottom-up. 
+	
+	The heights of $z$'s ancestors will change in the first step,\ while in the second step,\ all these nodes are $BALANCE$ and modified to the correct place.
+	
+	\textbf{(d)}\ Both the $INSERT$ and the $BALANCE$ process takes $O(h)$ time,\ so the total time is $O(lgn)$.\ Notice each of the new inserted node's ancestors will be rotated at most one time,\ $O(1)$ rotations will be performed.
+	
+	\section{Problem 7}
+	\textbf{(a)}\ We will extract element from $A$ in order and insert it to the treap.\ Notice $A$ is sorted,\ every time we just need to set the inserted node as the right child of the right-most node in the treap.\ Then we do rotation if it doesn't satisfy heap property.
+	
+	Consider the worst case,\ if the priority of the newly inserted node is always maximum(suppose the treap has MinHeap-property),\ the treap always rotates left and root's right child is always empty,\ $n-1$ rotations will be needed and the time complexity is $O(n)$. 
+	
+	\textbf{(b)}\ Suppose for each key,\ it stays at the current level with probability $p$,\ then the probability it goes to the next level is $1 - p$.\ Then it reaches height $h$ obeys geometric distribution,\ i.e.\ $P(H = h) = (1-p)^{h-1}p$.\ Then we obtain
+	\begin{equation*}
+	P(H \leq h) = 1 - (1-p)^h
+	\end{equation*}
+	by summation.\ Then
+	\begin{equation*}
+		P(H > h) = (1 - p)^h
+	\end{equation*}	
+	When $h = O(logn)$,\ we have $h \leq clogn$.\ If $p = \frac{1}{2}$,
+	\begin{equation*}
+	P(H > clogn) = (1 - \frac{1}{2})^{clogn} = \frac{1}{n^c}
+	\end{equation*}
+	Notice there are $n$ i.i.d such random variables,\ use Boole's inequality
+	\begin{equation*}
+	\begin{aligned}
+	&P(H_1 > clogn\ or\ H_2 > clogn\ or \cdots or\ H_n > clogn)\\ \leq &P(H_1 > clogn) + P(H_2 > clogn) + \cdots +P(H_n > clogn)\\ = &\frac{1}{n^{c-1}}
+	\end{aligned}
+	\end{equation*} 
+	Then 
+	\begin{equation*}
+		\begin{aligned}
+		&P(H_1 \leq clogn\ and \cdots and\ H_n \leq clogn)\\ = &1 - P(H_1 > clogn\ or\cdots or\ H_n > clogn)\\ \geq &1 - \frac{1}{n^{c-1}} \\ \geq & 1-\frac{1}{n}
+		\end{aligned}
+	\end{equation*}
+	for $c \geq 2$.\ So the max level is $O(logn)$ with high level.
+	
+	\textbf{(c)}\ For a given key,\ we have argued the the number of its levels is given by geometric distribution,\ and its expectation value is $\frac{1}{p}$.\ Notice there are $n$ such i.i.d keys,\ the total number of nodes is $\frac{n}{p}$.\ If $p = \frac{1}{2}$,\ the number is $2n = O(n)$ in expectation.
 \end{document}
