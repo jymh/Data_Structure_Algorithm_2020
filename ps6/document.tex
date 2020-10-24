@@ -11,7 +11,7 @@
 	\section{Problem 1}
 	First randomly choose a bucket from the $m$ buckets.\ Suppose the length of the chosen bucket is $k$,\ we use $RANDOM(1, L)$ and suppose the return value is $a$.\ If $a \leq k$,\ return the $a^{th}$ element in that bucket.\ Otherwise,\ we continue this process until $a \leq k$.\ By this way,\ each element is chosen with probability $\frac{1}{mK}$.
 	
-	The probability that we succeed chosing an element in a particular bucket is $\frac{k}{L}$,\ so the expected chosing times are $\frac{L}{k}$.\ Together with $a$ times for retriving the element,\ total time is $O(a + \frac{L}{k}) = O(L\cdot (a/L + 1/k))$,\ so the excepted time is $O(L\cdot (1 + 1/\alpha))$(excepted value of $k$ is $\alpha$ and $a/L \leq 1$).
+	The probability that we succeed in chosing an element in a particular bucket is $\frac{k}{L}$,\ so the expected chosing times are $\frac{L}{k}$.\ Together with $a$ times for retriving the element,\ total time is $O(a + \frac{L}{k}) = O(L\cdot (a/L + 1/k))$,\ so the excepted time is $O(L\cdot (1 + 1/\alpha))$(excepted value of $k$ is $\alpha$ and $a/L \leq 1$).
 	
 	\section{Problem 2}
 	\textbf{(a)}\ Suppose string $x$ of length $l+1$:\ $x_lx_{l-1}\cdots x_0$,\ $x$ has key value $x_l\times (m+1)^l + \cdots + x_0\times (m+1)^0$.\ We have
@@ -24,5 +24,104 @@
 	\end{equation*}
 	We can find the hash value of a string is determined by all its characters but is independent with the order of them.\ Hence,\ $x$ and $y$ hash to the same value.
 	
-	\textbf{(b)}
+	\textbf{(b)}\ Linear probing,\ $h(k,i) = (h'(k) + i)\ mod\ 11$,\ let $h'(k) = k$
+	
+	\begin{tabular}{|c|}
+		\hline
+		22\\
+		\hline
+		88\\
+		\hline
+		\\
+		\hline
+		\\
+		\hline
+		4\\
+		\hline
+		15\\
+		\hline
+		28\\
+		\hline
+		17\\
+		\hline
+		59\\
+		\hline
+		31\\
+		\hline
+		10\\
+		\hline
+	\end{tabular}
+
+	Quadratic probing:\ $h(k,i) = (k + i + 3i^2)\ mod\ 11$
+	
+	\begin{tabular}{|c|}
+		\hline
+		22\\
+		\hline
+		\\
+		\hline
+		88\\
+		\hline
+		17\\
+		\hline
+		4\\
+		\hline
+		\\
+		\hline
+		28\\
+		\hline
+		59\\
+		\hline
+		15\\
+		\hline
+		31\\
+		\hline
+		10\\
+		\hline
+	\end{tabular}
+
+	Double hashing:\ $h(k,i) = h_1(k) + ih_2(k)\ mod\ 11$
+	
+	\begin{tabular}{|c|}
+		\hline
+		22\\
+		\hline
+		\\
+		\hline
+		59\\
+		\hline
+		17\\
+		\hline
+		4\\
+		\hline
+		15\\
+		\hline
+		28\\
+		\hline
+		88\\
+		\hline
+		\\
+		\hline
+		31\\
+		\hline
+		10\\
+		\hline
+	\end{tabular}
+
+	\section{Problem 3}
+	Let $B_i = \{w | h(w) = i\}$,\ which respesents the $i^{th}$ bucket in $B$.\ We have
+	\begin{equation*}
+		\begin{aligned}
+		Pr[h(k) = h(l)] &= \frac{\sum_{i=1}^{|B|}C_{|B_i|}^2}{C_{|U|}^2}\\
+		& = \frac{\sum_{i=1}^{|B|}|B_i|(|B_i| - 1)}{|U|(|U|-1)}\\
+		& = \frac{\sum_{i=1}^{|B|}(|B_i|^2 - |B_i|)}{|U|(|U|-1)}\\
+		& = \frac{\sum_{i=1}^{|B|}|B_i|^2 - |U|}{|U|(|U|-1)}\\
+		& = \frac{\sum_{i=1}^{|B|}|B_i|^2}{|U|(|U|-1)} - \frac{1}{|U|-1}\\
+		& = \frac{\frac{1}{|B|}(\sum_{i=1}^{|B|}|B_i|)^2}{|U|(|U|-1)} - \frac{1}{|U|-1}\\
+		& = \frac{|U|}{|B|(|U|-1)} - \frac{1}{|U|-1}\\
+		& \geq \frac{|U|-1}{|U|}(\frac{|U|}{|B|(|U|-1)} - \frac{1}{|U|-1})\\
+		& = \frac{1}{|B|} - \frac{1}{|U|}
+		\end{aligned}
+	\end{equation*}
+	Notice $Pr[h(k) = h(l)] \leq \epsilon$,\ hence $\epsilon \geq \frac{1}{|B|} - \frac{1}{|U|}$
 \end{document}
