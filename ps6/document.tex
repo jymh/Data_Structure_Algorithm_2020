@@ -1,0 +1,28 @@
+\documentclass[]{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{forest}
+
+\title{Solution for Problem Set 6}
+\author{Mianzhi Pan, 181240045}
+\begin{document}
+	\maketitle
+	\section{Problem 1}
+	First randomly choose a bucket from the $m$ buckets.\ Suppose the length of the chosen bucket is $k$,\ we use $RANDOM(1, L)$ and suppose the return value is $a$.\ If $a \leq k$,\ return the $a^{th}$ element in that bucket.\ Otherwise,\ we continue this process until $a \leq k$.\ By this way,\ each element is chosen with probability $\frac{1}{mK}$.
+	
+	The probability that we succeed chosing an element in a particular bucket is $\frac{k}{L}$,\ so the expected chosing times are $\frac{L}{k}$.\ Together with $a$ times for retriving the element,\ total time is $O(a + \frac{L}{k}) = O(L\cdot (a/L + 1/k))$,\ so the excepted time is $O(L\cdot (1 + 1/\alpha))$(excepted value of $k$ is $\alpha$ and $a/L \leq 1$).
+	
+	\section{Problem 2}
+	\textbf{(a)}\ Suppose string $x$ of length $l+1$:\ $x_lx_{l-1}\cdots x_0$,\ $x$ has key value $x_l\times (m+1)^l + \cdots + x_0\times (m+1)^0$.\ We have
+	\begin{equation*}
+	\begin{aligned}
+	h(x) &= x\ mod\ m\\
+	& = ((x_l\times (m+1)^l)\ mod\ m + \cdots + (x_0\times (m+1)^0)\ mod\ m)\ mod\ m\\
+	& = (x_l\ mod\ m + \cdots + x_0\ mod\ m)\ mod\ m
+	\end{aligned}
+	\end{equation*}
+	We can find the hash value of a string is determined by all its characters but is independent with the order of them.\ Hence,\ $x$ and $y$ hash to the same value.
+	
+	\textbf{(b)}
+\end{document}
