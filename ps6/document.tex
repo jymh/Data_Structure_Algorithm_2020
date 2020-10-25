@@ -124,4 +124,14 @@
 		\end{aligned}
 	\end{equation*}
 	Notice $Pr[h(k) = h(l)] \leq \epsilon$,\ hence $\epsilon \geq \frac{1}{|B|} - \frac{1}{|U|}$
+	
+    \section{Problem 4}
+    Use \textbf{CircularArray} to implement this D.S.\ The $INSERT(S,x)$ operation is the same as that in class.\ When we do $DELLARGEHALF(S)$,\ we first use $QUICKSELECT$ to select the median,\ then go through all elements and copy those no larger than the median to another half-sized array.
+    
+    The amortized cost of $INSERT(S,x)$ is $O(1)$ apparently.\ Notice the real cost $c_i$ of $DELLARGEHALF(S)$ is $\Theta(|S|)$,\ i.e.\ $c_i = p|S|$.\ Suppose the potential function is linear to $|S|$,\ i.e.\ $\Phi(D_i) = q|S|$,\ then $\Phi(D_i) - \Phi(D_{i-1}) \leq -\frac{q}{2}|S|$.\ Therefore $\hat{c_i} = (p-\frac{q}{2})|S|$,\ we can always define a potential function such that $\hat{c_i} = O(1)$.\ Hence the amortized cost of $DELLARGEHALF(S)$ is alse $O(1)$.\ The $m$ operations can run in $O(m)$ time in total.
+    
+    When we want to output the elements,\ we just need to do $REMOVE$ like that in class and output them.  
+    
+    \section{Problem 5}
+    We want to transform this problem to that in which the counter begins at a number with $0$ $1$s.\ First,\ we assume $n \geq cb$.\ In order to transform the $b$ $1$s to $0$s,\ we need to do $b$ times $1\to 0$ operations.\ Average them to $n$ operations,\ each opeartion cost $\frac{b}{n}\leq \frac{1}{c}$ time.\ Together with the origin problem,\ the amortized cost of $INC$ in this problem is no more than $2+\frac{1}{c}$,\ so the total cost is $n(2+\frac{1}{c}) = O(n)$.
 \end{document}
