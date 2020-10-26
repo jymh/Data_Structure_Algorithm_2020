@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/W32TeX) (preloaded format=xelatex 2020.2.7)  25 OCT 2020 19:10
+This is XeTeX, Version 3.14159265-2.6-0.999991 (TeX Live 2019/W32TeX) (preloaded format=xelatex 2020.2.7)  26 OCT 2020 11:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -645,7 +645,7 @@ LaTeX Font Info:    ... okay on input line 9.
 
 ABD: EveryShipout initializing macros [1
 
-] [2] [3] [4] (./document.aux) ) 
+] [2] [3] [4] [5] (./document.aux) ) 
 Here is how much of TeX's memory you used:
  22719 strings out of 479827
  550608 string characters out of 5893857
@@ -655,4 +655,4 @@ Here is how much of TeX's memory you used:
  1348 hyphenation exceptions out of 8191
  67i,8n,71p,1584b,187s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on document.pdf (4 pages).
+Output written on document.pdf (5 pages).

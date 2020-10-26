@@ -134,4 +134,61 @@
     
     \section{Problem 5}
     We want to transform this problem to that in which the counter begins at a number with $0$ $1$s.\ First,\ we assume $n \geq cb$.\ In order to transform the $b$ $1$s to $0$s,\ we need to do $b$ times $1\to 0$ operations.\ Average them to $n$ operations,\ each opeartion cost $\frac{b}{n}\leq \frac{1}{c}$ time.\ Together with the origin problem,\ the amortized cost of $INC$ in this problem is no more than $2+\frac{1}{c}$,\ so the total cost is $n(2+\frac{1}{c}) = O(n)$.
+    
+    \section{Problem 6}
+    \textbf{(a)}\ No.\ Consider a full array($stack.size == array.size$) and the following sequence of operations on it:
+    
+    push,\ pop,\ pop,\ push,\ push,\ pop,\ pop,\ push,\ push$\cdots$
+    
+    The first push makes the array size doubled,\ then the following two pop make the array half,\ the next two push make the array doubled again$\cdots$\ Apparently,\ the amoritized time per stack operation is $O(N)$.
+    
+    \textbf{(b)}\ Yes.
+    
+    Notice the answer for problem (c) is yes(I have proved below),\ answer for this problem is yes as well.\ In this condition,\ we have to do more pop operations(without shrinking the array) than problem (c) before the pop operation with shrinking(except the first).\ So we can accumulate more account value than that in problem (c),\ and the amortized time of pop is $O(1)$,\ too.
+       
+    \textbf{(c)}\ Yes.
+    
+    The amortized time of push operation is $3$,\ which has been proved in class.
+    
+    To analyse the amortized time of pop operation,\ we first define potential function
+    \begin{equation*}
+    \Phi(T) = \begin{cases}
+    2\cdot num - size,\quad \alpha_i\geq 1/2 \\
+    size/2 - num,\quad \alpha_i< 1/2
+    \end{cases}
+    \end{equation*}  
+    where $num$ is the stack size,\ $size$ is the array size.\ And $\alpha_i$ is the load factor after the $i^{th}$ operation,\ which is defined as $\alpha_i = num_i/size_i$ and has value in $[0,1]$.\ Apparently,\ $\Phi(T_0) = 0$ and $\Phi(T_i)\geq 0$.
+    
+    If $\alpha_{i-1}< 1/2$ and there is no shrink.\ We have $size_i = size_{i-1}$ and $num_{i-1} = num_i + 1$,\ so
+    \begin{equation*}
+    \hat{c_i} = c_i + (size_i/2 - num_i) - (size_{i-1}/2 - num_{i-1}) = 2
+    \end{equation*}
+    
+    If $\alpha_{i-1}< 1/2$ and the array is shrink during the $i^{th}$ op,\ $size_i = size_{i-1}/2$.\ Notice $\alpha_i = \frac{num_i}{2(num_i + 1)} < 1/2$,\ we have
+    \begin{equation*}
+    \begin{aligned}
+    \hat{c_i} &= c_i + (size_i/2 - num_i) - (size_{i-1}/2 - num_{i-1})\\
+    &= num_{i-1} - size_i/2 + 1\\
+    &= size_i/2 - size_i/2 +1\\
+    &= 1
+    \end{aligned}
+    \end{equation*}
+    
+    If $\alpha_{i-1}\geq 1/2$,\ notice the array will be shrunk if and only if $size_{i-1} == 2$ and $num_{i-1} == 1$,\ this condition takes constant time obviously.\ Considering other conditions,\ if $\alpha_{i}\geq 1/2$,\ we have $size_i = size_{i-1}$,\ therefore
+    \begin{equation*}
+    \hat{c_i} = 1 + (2\cdot num_i - size_i) - (2\cdot num_{i-1} - size_{i-1}) = -1
+    \end{equation*}
+    Otherwise,\ if $\alpha_i< 1/2$,\ we have
+    \begin{equation*}
+    \begin{aligned}
+    \hat{c_i} &= 1 + (size_i/2 - num_i) - (2\cdot num_{i-1} - size_{i-1})\\
+    &= 2 - 3\cdot num_{i-1} + 3\cdot size_{i-1}/2\\
+    \end{aligned}
+    \end{equation*}
+    Remind that $\alpha_{i-1}\geq 1/2$,\ so $\frac{num_{i-1}}{size_{i-1}}\geq \frac{1}{2}$,\ then $size_{i-1}\leq 2\cdot num_{i-1}$.\ Therefore
+    \begin{equation*}
+    \hat{c_i} \leq 2
+    \end{equation*}
+    
+    In conclusion,\ the amortized time of pop operation is $O(1)$.
 \end{document}
