@@ -191,4 +191,39 @@
     \end{equation*}
     
     In conclusion,\ the amortized time of pop operation is $O(1)$.
+    
+    \section{Problem 7}
+    \textbf{(a)}\ Notice the amortized time of each $INC$ depends on the running time of $SOMETHINGELSE$,\ we only consider $T(i)$.\ If $T(i)=4$,\ the amortized time of $INC$ if $O(1) + 4$,\ which is still $O(1)$.
+    
+    \textbf{(b)}\ Considering the value of $i$ before $SOMETHINGELSE$ every time we do $INC$,\ it is clear that the index of the first $0$ in $j-1$ equals to $i$ after $j^{th}$ $INC$.\ We enumerate some $i$:
+    
+    $\\
+     0\ 1\\
+     0\ 2\\
+     0\ 1\ 0\ 3\\
+     0\ 1\ 0\ 2\ 0\ 1\ 0\ 4\\
+     \cdots$
+     
+     So the corresponding $T(i)$ is 
+     
+     $\\
+      1\ 2\\
+      1\ 4\\
+      1\ 2\ 1\ 8\\
+      1\ 2\ 1\ 4\ 1\ 2\ 1\ 16\\
+      \cdots 
+     $
+     
+     Besides lots of $1$s,\ we can always distribute $2^m$(at the end of each line) to all numbers before equally with constant value $1$.\ So the amortized time is $O(lgn)$.
+     
+     \textbf{(c)}\ Enumerate some $T(i)$ as the above
+     
+     $\\
+      1\ 4\\
+      1\ 16\\
+      1\ 4\ 1\ 64\\
+      1\ 4\ 1\ 16\ 1\ 4\ 1\ 256\\
+      \cdots$ 
+      
+     Analyse like problem (b),\ we can't distribute the number at the end of each line to all numbers before with a constant value.\ The average value grows double,\ i.e.\ $2,\ 4,\ 8,\ 16\cdots$.\ Add them all and the amortized time is $O(n)$. 
 \end{document}
