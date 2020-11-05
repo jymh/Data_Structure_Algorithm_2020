@@ -11,11 +11,18 @@
 	\section{Problem 1}
 	\textbf{(a)}\ We do $\mathtt{MAKESET}$ for $n$ times and each of them cost $\Theta(1)$.\ Notice during each $\mathtt{UNION}$,\ we append the list of length $1$ to the longer list,\ so it also cost $\Theta(1)$.\ Hence the total running time is $n + n - 1 = \Theta(n)$.
 	
-	\textbf{(b)}\  
+	\textbf{(b)}\ Notice every node of the trees will be visited only once while we do $FIND$ by path compression.\ Hence the total time is $O(n)$. 
 	
 	\section{Problem 2}
-	\textbf{(a)}
+	\textbf{(a)}\ We mantain an array $X$ to support $LOOKUP$ in $O(1)$ time.\ Every time we do $BLACKEN(i)$,\ we will set $X[i]\leftarrow 1$.\ However,\ we need to do more.\ Treating the continuous 'black' elements in $X$ as a set in the form of rooted-tree,\ all these sets make up a disjoint-set.\ Moreover,\ the leader of each set should store the index of the first 'white' element after the 'black' interval'.\ So when we do $BLACKEN(i)$,\ 
 	
+	(1) If $X[i-1]$ and $X[i+1]$ are 'white',\ we just need to do $MakeSet(X[i])$ to create a set containing only $X[i]$ whose leader is also $X[i]$,\ and the 'white index' it stores is $i+1$.
+	
+	(2) Otherwise,\ $X[i]$ is adjancent to one or two 'black intervals',\ we have to $UNION$ them.\ And the 'white index' of the leader of the new set should be the 'white index' of the right-most set among them in $X$. 
+	
+	Here we use union-by-height to implement $UNION$,\ so the amortized time for $BLACKEN$ is $O(logn)$.\ To implement $NEXTWHITE(i)$,\ if $X[i]$ is 'white',\ return $i$ directly.\ Otherwise,\ we can first call $Find(X[i])$ to find the leader and return its 'white index'.\ However,\ this will still cost $O(logn)$.\ Maybe more operations are needed in $BLACKEN(i)$,\ but I haven't make it yet.
+	
+	\textbf{(b)}\ \textbf{I haven't work out it yet}.\ Maybe we can use union-by-rank and path-compression to implement $UNION$ in the data structure of part (a).\ Then the amortized time for $NEXTWHITE$ is $O(log*n)$,\ however,\ the worst-case time for $BLACKEN$ is not $O(n)$.\ Awful!
 	\section{Problem 3}
 	Suppose the adjacency matrix is $A$ and the $i^{th}$ vertex satisfying the property,\ then the matrix row $A[i][1,\cdots,|V|]$ must be all $0$ and the column $A[1,\cdots,|V|][i]$ must be all $1$ except the element $A[i][i]$.
 	
@@ -81,6 +88,4 @@
  	Then we comes to the problem.\ Given two vertices $s^0$ and $s^k$ in the origin graph $G$ and a path connected them of length $k$,\ assume all vertices along the path is $s^0,\ s^1\, \cdots, s^{k-1},\ s^k$,\ and the corresponding vertices in the new graph is $s^0_m,\ s^1_{(m+1)\ mod\ 3},\ \cdots,\ s^k_n$.\ Obviously,\ $n = (m+k)\ mod\ 3$.\ If $k$ is divisible by $3$,\ then $n = m$.\ Samely,\ we can prove the inverse proposition is true as well.
  	
  	Deduce from the above proposition,\ if there exists a path from $s_m$ to $t_m$,(e.g.\ $s_0$ and $t_0$) in the new graph,\ which can be implement by BFS,\ then there must exist a walk from $s$ to $t$ whose length is divisible by $3$ in the origin graph,\ and the algorithm will return $\mathtt{true}$.
-	
-	
 \end{document}
