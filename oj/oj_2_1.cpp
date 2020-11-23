@@ -1,12 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define DEBUG 
+//#define DEBUG 
 
 struct node {
     long long val;
     long long cnt;//maybe many nodes of same value
     long long subSum;//sum of the subtree rooted at it
+    long long priority;
     struct node *left;
     struct node *right;
     struct node *parent;
@@ -19,15 +20,17 @@ void Init() {
     root->val = 0;
     root->cnt = 0;
     root->subSum = 0;
+    root->priority = 0;
     root->left = NULL;
     root->right = NULL;
     root->parent = NULL;
 }
 
-void InitNode(node_t *node, long long val, long long cnt, long long subSum, node_t *left, node_t *right, node_t *parent) {
+void InitNode(node_t *node, long long val, long long cnt, long long subSum, long long priority, node_t *left, node_t *right, node_t *parent) {
     node->val = val;
     node->cnt = cnt;
     node->subSum = subSum;
+    node->priority = priority;
     node->left = left;
     node->right = right;
     node->parent = parent;
@@ -45,9 +48,69 @@ node_t* Search(long long value) {
     }
 }
 
-void Insert(long long value) {
+void LeftRotate(node_t *x) {//x->right, x->parent changed
+    node_t *y = x->right;
+    assert(y != NULL);
+
+    //update sum
+    x->subSum -= y->subSum;
+    x->subSum += (y->left == NULL) ? 0 : y->left->subSum;
+    y->subSum -= (y->left == NULL) ? 0 : y->left->subSum;
+    y->subSum += x->subSum;
+
+    //begin rotate
+    x->right = y->left;
+    if(y->left != NULL) {
+        y->left->parent = x;
+    }
+    y->parent = x->parent;
+    if(x->parent == NULL) {
+        assert(x == root);
+        root = y;
+    }
+    else if(x == x->parent->left) {
+        x->parent->left = y;
+    }
+    else if(x == x->parent->right) {
+        x->parent->right = y;
+    }
+    y->left = x;
+    x->parent = y;
+}
+
+void RightRotate(node_t *x) {//x->left,x->parent changed
+    node_t *y = x->left;
+    assert(y != NULL);
+
+    //update sum
+    x->subSum -= y->subSum;
+    x->subSum += (y->right == NULL) ? 0 : y->right->subSum;
+    y->subSum -= (y->right == NULL) ? 0 : y->right->subSum;
+    y->subSum += x->subSum;
+
+    //begin rotate
+    x->left = y->right;
+    if(y->right != NULL) {
+        y->right->parent = x;
+    }
+    y->parent = x->parent;
+    if(x->parent == NULL) {
+        assert(x == root);
+        root = y;
+    }
+    else if(x == x->parent->left) {
+        x->parent->left = y;
+    }
+    else if(x == x->parent->right) {
+        x->parent->right = y;
+    }
+    y->right = x;
+    x->parent = y;
+}
+
+void Insert(long long value, long long priority) {
     if(root->cnt == 0) {//root is empty
-        InitNode(root, value, 1, value, NULL, NULL, NULL);
+        InitNode(root, value, 1, value, priority, NULL, NULL, NULL);
     }
     else {//root->cnt != 0
         node_t *x = root, *y = NULL;
@@ -57,7 +120,7 @@ void Insert(long long value) {
                 x->subSum += value;
                 x = x->left;    
             }
-            else if(x->val == value) {
+            else if(x->val == value) {//don't update priority here
                 x->subSum += value;
                 x->cnt ++;
                 break;
@@ -70,16 +133,31 @@ void Insert(long long value) {
         
         if(x == NULL) {
             node_t *z = (node_t*)malloc(sizeof(node_t));
-            InitNode(z, value, 1, value, NULL, NULL, y);
+            InitNode(z, value, 1, value, priority, NULL, NULL, y);
             if(value < y->val) y->left = z;
             else y->right = z;
+            
+            while(z->priority < z->parent->priority) {
+                if(z == z->parent->left) {
+                    RightRotate(z->parent);
+                }
+                else if(z == z->parent->right) {
+                    LeftRotate(z->parent);
+                }
+
+                if(z->parent == NULL) {
+                    assert(z == root);
+                    break;
+                }
+            }
         }
     }
 }
 
+/*
 void Transplant(node_t *u, node_t *v) {//no update v.left and v.right
     if(u == root && v == NULL) {
-        InitNode(u, 0, 0, 0, NULL, NULL, NULL);
+        InitNode(u, 0, 0, 0, 0, NULL, NULL, NULL);
         return;
     }
 
@@ -94,12 +172,15 @@ void Transplant(node_t *u, node_t *v) {//no update v.left and v.right
     }
     if(v != NULL) v->parent = u->parent;
 }
+*/
 
+/*
 node_t* Minimum(node_t *z) {
     node_t *temp = z;
     while(temp->left != NULL) temp = temp->left;
     return temp;
-}   
+}  
+*/ 
 
 void ModPathSum(node_t *start, node_t *end, long long dec) {
     node_t *p = start;
@@ -110,6 +191,7 @@ void ModPathSum(node_t *start, node_t *end, long long dec) {
 }
 
 void Delete(node_t *z) {
+    /*
     ModPathSum(z, root, z->val * z->cnt);//necessary
     if(z->left == NULL) {
         Transplant(z, z->right);
@@ -129,6 +211,33 @@ void Delete(node_t *z) {
         y->subSum = z->subSum;
         y->left = z->left;
         y->left->parent = y;
+    }
+    */
+    while(!(z->left == NULL && z->right == NULL)) {
+        if(z->left == NULL) {
+            LeftRotate(z);
+        }
+        else if(z->right == NULL) {
+            RightRotate(z);
+        }
+        else {
+            if(z->right->priority < z->left->priority) {
+                LeftRotate(z);
+            }
+            else {
+                RightRotate(z);
+            }
+        }
+    }
+    ModPathSum(z, root, z->val * z->cnt);
+    if(z->parent == NULL) {//z is root
+        InitNode(z, 0, 0, 0, 0, NULL, NULL, NULL);
+    }
+    else if(z == z->parent->left){
+        z->parent->left = NULL;
+    }
+    else if(z == z->parent->right) {
+        z->parent->right = NULL;
     }
 }
 
@@ -190,6 +299,7 @@ long long rangeSum(long long lo, long long hi) {
 }
 
 int main() {
+    srand((unsigned)time(0));
     #ifdef DEBUG
         FILE *f = fopen("res.txt", "w");
     #endif
@@ -209,7 +319,9 @@ int main() {
         switch(ops[0]) {
             case 0: {
                 long long x = (ops[1] + lans) % mod;
-                Insert(x);
+                long long priority = rand();
+                //printf("priority is %lld\n", priority);
+                Insert(x, priority);
                 break;
             }
             case 1: {
