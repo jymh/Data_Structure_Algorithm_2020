@@ -1,9 +1,6 @@
 {
     "background.customImages": [
-
-
-
-        "D:/pictures/14004_5e2dd87114.jpg"
+        "D:/pictures/v2-8c4bdc44d7ba037321b08ef008867222_r.jpg"
     ],
     "files.associations": {
         "*.tcc": "cpp",
@@ -11,7 +8,8 @@
         "istream": "cpp",
         "streambuf": "cpp",
         "cmath": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "iostream": "cpp"
     },
     "background.style": {
 
